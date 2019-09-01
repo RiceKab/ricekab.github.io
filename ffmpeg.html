@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ffmpeg_cut documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="cutting-videos-with-ffmpeg">
+<h1>Cutting videos with ffmpeg<a class="headerlink" href="#cutting-videos-with-ffmpeg" title="Permalink to this headline">¶</a></h1>
+<p>This short guide describes how to cut videos using ffmpeg, a command line tool to
+manipulate audio and video streams. This guide will be assuming you are running
+on Windows for the examples.</p>
+<p>Commands that are entered in your terminal will be shown in blocks like so:</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\CurrentDirectory</span><span class="c1">&gt; command to type</span>
+
+Output of the command
+</pre></div>
+</div>
+<p>Note the caret (&gt;) symbol for where you have to enter commands.</p>
+<div class="section" id="example-scenario">
+<h2>Example scenario<a class="headerlink" href="#example-scenario" title="Permalink to this headline">¶</a></h2>
+<p>We’re going to use the following example for this document. We will have a video we want to cut in
+<code class="code docutils literal notranslate"><span class="pre">C:\videos\raw\smashvod.flv</span></code> and we want to write the cut version in <code class="code docutils literal notranslate"><span class="pre">C:\videos\cut\smashvod_cut.flv</span></code>.</p>
+</div>
+<div class="section" id="getting-ffmpeg">
+<h2>Getting ffmpeg<a class="headerlink" href="#getting-ffmpeg" title="Permalink to this headline">¶</a></h2>
+<p>You can find Windows builds for ffmpeg here: <a class="reference external" href="https://ffmpeg.zeranoe.com/builds/">https://ffmpeg.zeranoe.com/builds/</a> .
+Download the zip archive that corresponds to your setup (most likely Windows 64 bit) with
+Static linking. This should be the default selected build.</p>
+<p>We are only interested in the <cite>bin</cite> directory within that zip, extract the contents from
+<cite>bin</cite> to <code class="code docutils literal notranslate"><span class="pre">C:\videos</span></code>. Your folder structure should look something like this now:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">videos</span>
+  <span class="o">|--</span> <span class="n">raw</span>
+    <span class="o">|--</span> <span class="n">smashvod</span><span class="o">.</span><span class="n">flv</span>
+  <span class="o">|-</span> <span class="n">cut</span>
+    <span class="o">|--</span> <span class="o">&lt;</span><span class="n">empty</span> <span class="n">directory</span><span class="o">&gt;</span>
+  <span class="o">|--</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">exe</span>
+  <span class="o">|--</span> <span class="n">ffplay</span><span class="o">.</span><span class="n">exe</span>
+  <span class="o">|--</span> <span class="n">ffprobe</span><span class="o">.</span><span class="n">exe</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-in-the-terminal">
+<h2>Working in the terminal<a class="headerlink" href="#working-in-the-terminal" title="Permalink to this headline">¶</a></h2>
+<p>You can open a terminal / command prompt in several ways.</p>
+<ul class="simple">
+<li><p>You can look for “Command Prompt” and run it.</p></li>
+<li><p>You can press WIN + R to open the run windows, then use <code class="code docutils literal notranslate"><span class="pre">cmd</span></code> and press OK.</p></li>
+<li><p>You can type <code class="code docutils literal notranslate"><span class="pre">cmd</span></code> in the navigation bar in explorer to open it in that directory.</p></li>
+</ul>
+<p>Once you have it open, navigate to the videos folder:</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\Users\myuser</span><span class="c1">&gt; cd C:\videos</span>
+C<span class="p">:</span><span class="nl">\videos</span><span class="c1">&gt;</span>
+</pre></div>
+</div>
+<p>Confirm that you can use ffmpeg with either of the following:</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\videos</span><span class="c1">&gt; ffmpeg --version</span>
+
+[Version output]
+
+# OR
+
+C<span class="p">:</span><span class="nl">\videos</span><span class="c1">&gt; where ffmpeg</span>
+
+C<span class="p">:</span><span class="nl">\videos\ffmpeg.exe</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you get an error along the lines of <code class="code docutils literal notranslate"><span class="pre">'ffmpeg'</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">recognized</span> <span class="pre">as</span> <span class="pre">an</span> <span class="pre">internal</span> <span class="pre">or</span> <span class="pre">external</span> <span class="pre">[...]</span></code>,
+check if <cite>ffmpeg.exe</cite> is in the correct location.</p>
+</div>
+</div>
+<div class="section" id="cutting-video">
+<h2>Cutting video<a class="headerlink" href="#cutting-video" title="Permalink to this headline">¶</a></h2>
+<p>The basic structure of a simple cut command is (the order of the options is important!):</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\videos</span><span class="c1">&gt; ffmpeg -ss &lt;start_in_seconds&gt; -i &lt;input_file&gt; -to &lt;end_timestamp&gt; -codec copy &lt;output_file&gt;</span>
+</pre></div>
+</div>
+<p>For our example, let’s say we want to cut off the first 10 seconds and cut off everything after 10 minutes.
+The command for this would be:</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>C<span class="p">:</span><span class="nl">\videos</span><span class="c1">&gt; ffmpeg -ss 10 -i raw\smashvod.flv -to 00:09:50 -codec copy cut\smashvod_cut.flv</span>
+</pre></div>
+</div>
+<p>Note that the <code class="code docutils literal notranslate"><span class="pre">-to</span></code> only goes until 09:50 instead of 10 minutes. This is because after cutting the first 10 seconds,
+the 10 minute mark is now at 09:50 when the -to processes the video.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This isn’t exactly correct and is related to the order of the options provided, but that’s an unecessary
+detail for this guide.</p>
+</div>
+</div>
+<div class="section" id="accessing-ffmpeg-from-anywhere">
+<h2>Accessing ffmpeg from anywhere<a class="headerlink" href="#accessing-ffmpeg-from-anywhere" title="Permalink to this headline">¶</a></h2>
+<p>You may want to be able to call <code class="code docutils literal notranslate"><span class="pre">ffmpeg</span></code> from anywhere, in order to do this you can add it to your PATH.
+If this is something you want just message me on Discord or look it up online.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html#document-index">ffmpeg_cut</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html#document-index">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, MIT License.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
